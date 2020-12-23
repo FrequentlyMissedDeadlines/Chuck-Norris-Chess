@@ -5,6 +5,16 @@
 I'm not Chuck Norris. He didn't code this AI. But it will kick you hard! Hence, this kicking name.
 By default it uses [MinMax with AlphaBeta pruning optimization](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning). You can switch to [Monte Carlo Tree search](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search) or Random with the configuration file. 
 # Try it out
+
+## In Arena Chess GUI
+This engine supports UCI protocol so it can be plugged in any polite compatible GUI. For Arena Chess:
+- Download the last version of the **JAR file** in [Releases page](https://github.com/FrequentlyMissedDeadlines/Chuck-Norris-Chess/releases).
+- Open Arena Chess GUI
+- Go to **Engines > Install New Engine** and select the previous **JAR file**
+- Select UCI
+- You should now be able to play against Chuck, enjoy being kicked!
+![](doc/Arena.png)
+## In standalone mode
 Run from code:
 ```
 mvn spring-boot:run

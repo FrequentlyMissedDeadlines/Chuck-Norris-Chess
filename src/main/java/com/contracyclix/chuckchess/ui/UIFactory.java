@@ -16,9 +16,13 @@ public class UIFactory {
     @Autowired
     private UIConsole uiConsole;
 
+    @Autowired
+    private UciGui uciGui;
+
     public UI getUI() throws NoUIClassException {
         switch (className) {
             case "UIConsole": return uiConsole;
+            case "UciGui": return uciGui;
 
             default: throw new NoUIClassException();
         }
