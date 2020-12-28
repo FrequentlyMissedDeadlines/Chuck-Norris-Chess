@@ -1,20 +1,19 @@
 package com.contracyclix.chuckchess.ai;
 
+import com.contracyclix.chuckchess.config.Config;
 import com.contracyclix.chuckchess.minmax.AlphaBeta;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveConversionException;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.Setter;
 
-@Service
 public class AIMinMax implements AI {
+    @Getter @Setter
+    private int maxDepth = Config.get().getInt("AI.MinMax.Depth");
 
-    @Value("${AI.MinMax.Depth}")
-    private Integer maxDepth;
-
-    @Value("${AI.MinMax.threads}")
-    private int numThreads;
+    @Getter @Setter
+    private int numThreads = Config.get().getInt("AI.MinMax.threads");
 
     @Override
     public Move getMove(BoardStateAdapter board, boolean isBotWhite) throws MoveGeneratorException {

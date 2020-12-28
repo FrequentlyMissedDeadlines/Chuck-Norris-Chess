@@ -1,5 +1,8 @@
 ![](doc/header.png)
 ![Build](https://github.com/FrequentlyMissedDeadlines/Chuck-Norris-Chess/workflows/Build/badge.svg)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/FrequentlyMissedDeadlines/Chuck-Norris-Chess?include_prereleases)
+[![Github All Releases](https://img.shields.io/github/downloads/FrequentlyMissedDeadlines/Chuck-Norris-Chess/total.svg?style=flat)]()
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 # Description
 
 I'm not Chuck Norris. He didn't code this AI. But it will kick you hard! Hence, this kicking name.
@@ -44,6 +47,7 @@ java -jar Chuck-Norris-Chess-1.0.jar --spring.config.location=src/main/resources
 ```
 
 # Dependencies
-* Springboot to make it cool
 * [Chesslib](https://github.com/bhlangonijr/chesslib) because they already coded all the game logic with bitboards, so why should I redo it?
-* [Optional] [Fantasque sans](https://github.com/belluzj/fantasque-sans) font because it's awesome
+* [Chess-UCI](https://github.com/FrequentlyMissedDeadlines/Chess-UCI) to plug my engine on any standard GUI.
+* [Apache commons configuration](https://commons.apache.org/proper/commons-configuration) to deal with config files.
+* [Optional] [Fantasque sans](https://github.com/belluzj/fantasque-sans) font because it's awesome.

@@ -1,23 +1,17 @@
 package com.contracyclix.chuckchess;
 
+import com.contracyclix.chuckchess.ai.NoAIClassException;
+import com.contracyclix.chuckchess.ui.NoUIClassException;
 import com.contracyclix.chuckchess.ui.UI;
 import com.contracyclix.chuckchess.ui.UIFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.Setter;
 
-@Component
-public class ChessApp implements CommandLineRunner {
+public class ChessApp {
+    @Getter @Setter
+    private UIFactory uiFactory = new UIFactory();
 
-    private static final Logger logger = LoggerFactory.getLogger(ChessApp.class);
-
-    @Autowired
-    private UIFactory uiFactory;
-
-    @Override
-    public void run(String... args) throws Exception {
+    public void run() throws NoUIClassException, NoAIClassException {
         UI ui = uiFactory.getUI();
         ui.run();
     }

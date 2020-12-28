@@ -3,11 +3,9 @@ package com.contracyclix.chuckchess.ai;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveGenerator;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class AIRandomMove implements AI {
 
     @Override

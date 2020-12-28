@@ -1,28 +1,27 @@
 package com.contracyclix.chuckchess.ai;
 
+import com.contracyclix.chuckchess.config.Config;
 import com.contracyclix.chuckchess.mcts.Mcts;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Service
 public class AIMcts implements AI {
 
     private Mcts<BoardStateAdapter, Move> mcts;
 
-    @Value("${AI.MCTS.threads}")
-    private int numThreads;
+    @Getter @Setter
+    private int numThreads = Config.get().getInt("AI.MCTS.threads");
 
-    @Value("${AI.MCTS.timePerActionSec}")
-    private int timePerActionSec;
+    @Getter @Setter
+    private int timePerActionSec = Config.get().getInt("AI.MCTS.timePerActionSec");
 
-    @Value("${AI.MCTS.maxIterations}")
-    private long maxIterations;
+    @Getter @Setter
+    private long maxIterations = Config.get().getLong("AI.MCTS.maxIterations");
 
     @Override
     public Move getMove(BoardStateAdapter board, boolean isBotWhite) throws MoveGeneratorException {
@@ -32,8 +31,7 @@ public class AIMcts implements AI {
         return mcts.getLastAction();
     }
 
-    @PostConstruct
-    public void setupMCTS() {
+    public AIMcts() {
         ExecutorService service = Executors.newFixedThreadPool(numThreads);
         mcts = new Mcts<>(service, numThreads, timePerActionSec, maxIterations);
     }

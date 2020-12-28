@@ -1,12 +1,11 @@
 package com.contracyclix.chuckchess;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.contracyclix.chuckchess.ai.NoAIClassException;
+import com.contracyclix.chuckchess.ui.NoUIClassException;
 
-@SpringBootApplication
 public class MainApp {
 
-    public static void main(String... args) {
-        SpringApplication.run(MainApp.class, args);
+    public static void main(String... args) throws NoUIClassException, NoAIClassException {
+        new ChessApp().run();
     }
 }

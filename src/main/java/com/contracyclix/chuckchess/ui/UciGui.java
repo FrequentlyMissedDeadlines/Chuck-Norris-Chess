@@ -4,25 +4,23 @@ import com.contracyclix.chuckchess.ai.AI;
 import com.contracyclix.chuckchess.ai.AIFactory;
 import com.contracyclix.chuckchess.ai.BoardStateAdapter;
 import com.contracyclix.chuckchess.ai.NoAIClassException;
+import com.contracyclix.chuckchess.config.Config;
 import com.frequentlymisseddeadlines.chessuci.GoParameters;
 import com.frequentlymisseddeadlines.chessuci.UciListener;
 import com.frequentlymisseddeadlines.chessuci.UciProtocol;
 import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.Setter;
 
-@Service
 public class UciGui implements UciListener, UI {
     private BoardStateAdapter board = new BoardStateAdapter();
 
-    @Value("${UCI.Algorithm:MinMax}")
-    private String algorithm;
+    @Getter @Setter
+    private String algorithm = Config.get().getString("UCI.Algorithm", "MinMax");
 
-    @Autowired
-    private AIFactory aiFactory;
+    private AIFactory aiFactory = new AIFactory();
 
     @Override
     public String getEngineName() {
