@@ -1,5 +1,6 @@
 package com.contracyclix.chuckchess.config;
 
+import lombok.Setter;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -7,9 +8,10 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import java.io.File;
 
 public class Config {
-    private static Config singleton = new Config();
+    @Setter
+    private static String configFileName = "application.properties";
 
-    private static final String configFileName = "application.properties";
+    private static Config singleton = null;
 
     private PropertiesConfiguration config;
 
@@ -25,6 +27,8 @@ public class Config {
     }
 
     public static PropertiesConfiguration get() {
+        if (singleton == null)
+            singleton = new Config();
         return singleton.config;
     }
 }

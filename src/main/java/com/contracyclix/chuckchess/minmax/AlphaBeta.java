@@ -1,16 +1,18 @@
 package com.contracyclix.chuckchess.minmax;
 
-import com.github.bhlangonijr.chesslib.Board;
-import com.github.bhlangonijr.chesslib.Piece;
-import com.github.bhlangonijr.chesslib.Side;
-import com.github.bhlangonijr.chesslib.Square;
-import com.github.bhlangonijr.chesslib.move.*;
+import com.github.bhlangonijr.chesslib.*;
+import com.github.bhlangonijr.chesslib.move.Move;
+import com.github.bhlangonijr.chesslib.move.MoveConversionException;
+import com.github.bhlangonijr.chesslib.move.MoveGeneratorException;
 import lombok.AllArgsConstructor;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @AllArgsConstructor
@@ -19,33 +21,28 @@ public class AlphaBeta {
     private final boolean isWhite;
     private final int numThreads;
 
+    private static final Map<Piece, Integer> piecesScores = new MoveComparator(null).scores;
+
+    private final static List<Square> allSquares = new LinkedList<>();
+    static {
+        for (Square s : Square.values()) {
+            if (s != Square.NONE) {
+                allSquares.add(s);
+            }
+        }
+    }
 
     private static boolean isTerminal(Board board) {
-        return board.isDraw() || board.isStaleMate() || board.isInsufficientMaterial() || board.isMated() || board.isRepetition();
+        return board.isDraw() || board.isMated();
     }
 
     private static long getPieceValue(Piece p, Side playerSide) {
         long val = 0;
-        if (p == null || p.value() == "NONE") {
-            return 0;
+
+        if (piecesScores.containsKey(p)) {
+            val += piecesScores.get(p);
         }
-        switch (p.getPieceType()) {
-            case BISHOP:
-                val+=3;
-                break;
-            case KNIGHT:
-                val+=3;
-                break;
-            case PAWN:
-                val+=1;
-                break;
-            case QUEEN:
-                val+=9;
-                break;
-            case ROOK:
-                val+=5;
-                break;
-        }
+
         if (p.getPieceSide() == playerSide) {
             return val;
         } else {
@@ -57,11 +54,11 @@ public class AlphaBeta {
         Piece[] pieces = board.boardToArray();
         Side playerSide = isWhite ? Side.WHITE : Side.BLACK;
 
-        if (board.isDraw() || board.isInsufficientMaterial() || board.isRepetition()) {
+        if (board.isDraw()) {
             return 0;
         }
 
-        if (board.isStaleMate() || board.isMated()) {
+        if (board.isMated()) {
             if (playerSide == board.getSideToMove()) {
                 return currentDepth - 1000000;
             } else {
@@ -76,21 +73,22 @@ public class AlphaBeta {
 
         score *= 100;
 
-        for (Square s : Square.values()) {
-            if (s != Square.NONE) {
-                if (board.squareAttackedBy(s, Side.BLACK) != 0) {
-                    if (playerSide == Side.BLACK) {
-                        score += 1;
-                    } else {
-                        score -= 1;
-                    }
+        //List<Move> allMoves = board.pseudoLegalMoves();
+        //score += 2 * allMoves.stream().filter(m -> board.getPiece(m.getFrom()).getPieceSide() == playerSide).count() - allMoves.size();
+
+        for (Square s : allSquares) {
+            if (squareAttackedBy(s, Side.BLACK, board)) {
+                if (playerSide == Side.BLACK) {
+                    score += 1;
+                } else {
+                    score -= 1;
                 }
-                if (board.squareAttackedBy(s, Side.WHITE) != 0) {
-                    if (playerSide == Side.WHITE) {
-                        score += 1;
-                    } else {
-                        score -= 1;
-                    }
+            }
+            if (squareAttackedBy(s, Side.WHITE, board)) {
+                if (playerSide == Side.WHITE) {
+                    score += 1;
+                } else {
+                    score -= 1;
                 }
             }
         }
@@ -98,8 +96,17 @@ public class AlphaBeta {
         return score;
     }
 
-    public Move getBestMove(Board initial) throws MoveGeneratorException, MoveConversionException {
-        List<Move> moves = MoveGenerator.generateLegalMoves(initial);
+    private boolean squareAttackedBy(Square square, Side side, Board board) {
+        long occ = board.getBitboard();
+        return (Bitboard.getPawnAttacks(side.flip(), square) & board.getBitboard(Piece.make(side, PieceType.PAWN)) & occ) != 0 ||
+                (Bitboard.getKnightAttacks(square, occ) & board.getBitboard(Piece.make(side, PieceType.KNIGHT))) != 0 ||
+                (Bitboard.getBishopAttacks(occ, square) & (board.getBitboard(Piece.make(side, PieceType.BISHOP)) | board.getBitboard(Piece.make(side, PieceType.QUEEN)))) != 0 ||
+                (Bitboard.getRookAttacks(occ, square) & (board.getBitboard(Piece.make(side, PieceType.ROOK)) | board.getBitboard(Piece.make(side, PieceType.QUEEN)))) != 0 ||
+                (Bitboard.getKingAttacks(square, occ) & board.getBitboard(Piece.make(side, PieceType.KING))) != 0;
+    }
+
+    public Move getBestMove(Board initial) throws MoveConversionException {
+        List<Move> moves = initial.legalMoves();
 
         ExecutorService service = Executors.newFixedThreadPool(numThreads);
         long[] scores = new long[moves.size()];
@@ -122,15 +129,13 @@ public class AlphaBeta {
         Move bestMove = null;
         service.shutdown();
         try {
-            boolean terminated = service.awaitTermination(60, TimeUnit.SECONDS);
+            boolean terminated = service.awaitTermination(600, TimeUnit.SECONDS);
             for (int i = 0 ; i < moves.size() ; i++) {
                 if (scores[i] > bestScore) {
                     bestScore = scores[i];
                     bestMove = moves.get(i);
                 }
             }
-            //System.out.println("Current eval: " + evaluate(initial, 0));
-            //System.out.println("Best move: " + bestMove.toString() + " " + bestScore);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -143,7 +148,7 @@ public class AlphaBeta {
             return evaluate(node, depth);
         }
 
-        List<Move> moves = MoveGenerator.generateLegalMoves(node);
+        List<Move> moves = node.legalMoves();
 
         if (isMax) {
             long score = Long.MIN_VALUE;
@@ -177,7 +182,7 @@ public class AlphaBeta {
             return evaluate(node, depth);
         }
         long score = Long.MIN_VALUE;
-        List<Move> moves = MoveGenerator.generateLegalMoves(node);
+        List<Move> moves = node.legalMoves().stream().sorted(new MoveComparator(node)).collect(Collectors.toList());
 
         for (Move move : moves) {
             Board child = node.clone();
