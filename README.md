@@ -3,6 +3,8 @@
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/FrequentlyMissedDeadlines/Chuck-Norris-Chess?include_prereleases)
 [![Github All Releases](https://img.shields.io/github/downloads/FrequentlyMissedDeadlines/Chuck-Norris-Chess/total.svg?style=flat)]()
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![](https://tokei.rs/b1/github/FrequentlyMissedDeadlines/Chuck-Norris-Chess?category=code)](https://github.com/FrequentlyMissedDeadlines/Chuck-Norris-Chess)
+
 # Description
 
 I'm not Chuck Norris. He didn't code this AI. But it will kick you hard! Hence, this kicking name.
