@@ -12,8 +12,8 @@ By default it uses [MinMax with AlphaBeta pruning optimization](https://en.wikip
 # Try it out
 
 ## In Arena Chess GUI
-This engine supports UCI protocol so it can be plugged in any polite compatible GUI. For Arena Chess:
-- If **Java 8+** is already installed on your computer go to next step. If not, you can [get it there](https://www.java.com/download/).
+This engine supports UCI protocol so it can be plugged in any polite compatible GUI. For Arena Chess ([download](http://www.playwitharena.de/)):
+- If **Java 8+** is already installed on your computer go to next step. If not, you can [download](https://www.java.com/download/).
 - Download the last version of the **JAR file** in [Releases page](https://github.com/FrequentlyMissedDeadlines/Chuck-Norris-Chess/releases).
 - Open Arena Chess GUI
 - Go to **Engines > Install New Engine** and select the previous **JAR file**
